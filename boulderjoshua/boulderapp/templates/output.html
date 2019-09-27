@@ -8,18 +8,36 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
-    <link rel="canonical" href="https://getbootstrap.com/docs/3.4/examples/starter-template/">
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/cover/">
 
     <title>Starter Template for Bootstrap</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <!-- Bootstrap core CSS -->
-    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.css' rel='stylesheet' />
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
 
     <!-- Custom styles for this template -->
-    <link href="starter-template.css" rel="stylesheet">
+    <link href="cover.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -31,97 +49,137 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
+  <body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mb-2 bg-secondary text-white mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <h1 class="masthead-brand">BoulderJoshua</h1>
+      <nav class="nav nav-masthead justify-content-center">
+        <a class="nav-link active text-white bg-dark" href="#">Home</a>
+        <a class="nav-link text-white bg-dark" href="#">Features</a>
+        <a class="nav-link text-white bg-dark" href="#">Contact</a>
+      </nav>
+    </div>
+  </header>
+
 
   <body>
-
-     <nav class="navbar navbar-inverse navbar-fixed-top">
-       <div class="container">
-         <div class="navbar-header">
-           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-             <span class="sr-only">Toggle navigation</span>
-             <span class="icon-bar"></span>
-             <span class="icon-bar"></span>
-             <span class="icon-bar"></span>
-           </button>
-           <a class="navbar-brand" href="#">Project name</a>
-         </div>
-         <div id="navbar" class="collapse navbar-collapse">
-           <ul class="nav navbar-nav">
-             <li class="active"><a href="#">Home</a></li>
-             <li><a href="#">About</a></li>
-             <li><a href="#">Contact</a></li>
-           </ul>
-         </div><!--/.nav-collapse -->
-       </div>
-     </nav>
 
      <br><br>
 
      <div class="container">
         <div class="starter-template">
-            <h2>Output Page</h2>
-            <p>Enter Travel Date, as YYYY-MM-DD</p>
+            <h2>Your Recommended Itinerary</h2>
         </div>
 
-        <div class = "container">
+        <hr class="mb-4">
 
-            <form  action="/output" method="GET">
-              <div class="form-group">
-                <label for="input">Travel Date:</label>
-                <input type="text" id="input" name='input' placeholder="e.g. ">
-              </div>
-              <div>
-                <button type="submit" class="btn btn-default btn-lg">Search Climb Info</button>
-              </div>
-            </form>
-          </div>
-          <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-          <script src="../static/js/bootstrap.min.js"></script>
+        <div class="starter-template">
+            <h3>Day 1 Climbing</h3>
+        </div>
 
-        </div> <!-- /.container-->
+        <div class="row">
+     <div class="col-md-6">
+       <h2>Location 1</h2>
+       <p>{{cl2lat}}, {{cl2long}}</p>
+       <p>Number of Routes in This Location: {{numroutes2}}</p>
+       <p>{{rsubnames2}}</p>
+       <p><a href="https://www.mountainproject.com/" class="btn btn-secondary" role="button">View details &raquo;</a></p>
+     </div>
+     <div class="col-md-6">
+       <h2>Location 2</h2>
+       <p>{{cl1lat}}, {{cl1long}}</p>
+       <p>Number of Routes in This Location: {{numroutes1}}</p>
+       <p>{{rsubnames}}</p>
+       <p><a href="https://www.mountainproject.com/" class="btn btn-secondary" role="button">View details &raquo;</a></p>
+     </div>
+   </div>
+
+        <hr class="mb-4">
+
+        <div class="starter-template">
+            <h3>Day 2 Climbing</h3>
+        </div>
+
+        <div class="row">
+             <div class="col-md-6">
+               <h2>Location 1</h2>
+               <p>{{cl3lat}}, {{cl3long}}</p>
+               <p>Number of Routes in This Location: {{numroutes3}}</p>
+               <p>{{rsubnames3}}</p>
+               <p><a href="https://www.mountainproject.com/" class="btn btn-secondary" role="button">View details &raquo;</a></p>
+             </div>
+             <div class="col-md-6">
+               <h2>Location 2</h2>
+               <p>{{cl4lat}}, {{cl4long}}</p>
+               <p>Number of Routes in This Location: {{numroutes4}}</p>
+               <p>{{rsubnames4}}</p>
+               <p><a href="https://www.mountainproject.com/" class="btn btn-secondary" role="button">View details &raquo;</a></p>
+             </div>
+           </div>
+
+        <hr class="mb-4">
 
           <div class="container">
             <div class="starter-template">
-              <h3>Results:</h3>
-              <p class="lead">Below are the campgrounds with the highest likelihood of campsite availability on your selected date</p>
+              <p class="lead">Below is the campground with the highest likelihood of campsite availability on your selected date.</p>
             </div>
 
             <div class="starter-template">
-	      <h2>Best Campground:</h2>
-	      <p>{{bestcamp}}</p>
+	      <h3>Best Campground:</h3>
+	      <h3>{{bestcamp}}</h3>
 	      <p>Predicted Occupancy Rate, Month Selected: {{bcocc}}</p>
 	    </div>
+
+      <hr class="mb-4">
 
         </div><!-- /.container -->
 
       <div class="container">
         <div class="starter-template">
-          <h3>Next Best Campground:</h3>
-          <p>{{bestcamp2}}</p>
-	  <p>Predicted Occupancy Rate, Month Selected: {{bcocc2}}</p>
+          <p>In case the first camp is full, these two camps are the next most likely to have availability.</p>
+          <h5>{{bestcamp2}}</h5>
+	        <p>Predicted Occupancy Rate, Month Selected: {{bcocc2}}</p>
         </div>
 
-	<div class="starter-template">
-	  <h3>Third Best Campground:</h3>
-	  <p>{{bestcamp3}}</p>
-	  <p>Predicted Occupancy Rate, Month Selected: {{bcocc3}}</p>
-	</div>
+	  <div class="starter-template">
+	    <h5>{{bestcamp3}}</h5>
+	    <p>Predicted Occupancy Rate, Month Selected: {{bcocc3}}</p>
+	  </div>
+
+    <hr class="mb-4">
+
+    <div class="container">
+      <div class="starter-template">
+        <p>*Occupancy Rates are MONTHLY Estimates* - Campsite Availability Not Guaranteed</p>
+      </div>
+    </div>
+
+    <div id='map' style='width: 1000px; height: 800px;'></div>
+    <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibnJncmlmZmluIiwiYSI6ImNrMTBzbjlpMTAwNnkzY2w4NWhqdGd2ZWMifQ.PEByrwNr0iGYYPs1C6u5dg';
+    var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [-116.1, 33.95], // starting position
+    zoom: 10 // starting zoom
+    });
+
+    // Add zoom and rotation controls to the map.
+    map.addControl(new mapboxgl.NavigationControl());
 
 
-        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-        <script src="../static/js/bootstrap.min.js"></script>
+    </script>
 
 
-      </div><!-- /.container -->
 
-
-     <!-- Bootstrap core JavaScript
-        ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-        <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-        <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-        <script src="../../dist/js/bootstrap.min.js"></script>
-        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-        <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
-  </body>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+ </body>
 </html>
