@@ -1,5 +1,5 @@
-from flask import Flask
-from flask import request, render_template, flash, redirect, send_from_directory
+from flask import render_template
+from flask import request
 from boulderapp import app
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
@@ -31,6 +31,36 @@ con = psycopg2.connect(database = dbname, user = user)
 
 
 @app.route('/')
+@app.route('/index')
+def index():
+    return render_template("cover_example.html",
+       title = 'Home', user = { 'nickname': 'Nick' },
+       )
+
+@app.route('/db')
+def birth_page():
+    sql_query = """
+                SELECT * FROM birth_data_table WHERE delivery_method='Cesarean';
+                """
+    query_results = pd.read_sql_query(sql_query,con)
+    births = ""
+    for i in range(0,10):
+        births += query_results.iloc[i]['birth_month']
+        births += "<br>"
+    return births
+
+@app.route('/db_fancy')
+def cesareans_page_fancy():
+    sql_query = """
+  	       SELECT index, attendant, birth_month FROM birth_data_table WHERE delivery_method='Cesarean';
+                """
+    query_results=pd.read_sql_query(sql_query,con)
+    births = []
+    for i in range(0,query_results.shape[0]):
+        births.append(dict(index=query_results.iloc[i]['index'], attendant=query_results.iloc[i]['attendant'],birth_month=query_results.iloc[i]['birth_month']))
+    return render_template('cover_example.html',births=births)
+
+@app.route('/input')
 def boulderjoshua_input():
     return render_template("input.html")
 
@@ -39,13 +69,7 @@ def boulderjoshua_output():
     diffrate1 = request.args.get('person1')
     diffrate2 = request.args.get('person2')
     diffrate3 = request.args.get('person3')
-
-    key1 = request.args.get('keyword1')
-    key2 = request.args.get('keyword2')
-    key3 = request.args.get('keyword3')
-
-    rinfo = pd.read_csv("~/Documents/jtnp_routesAndDesc_joined_reducedv2_KEYWORDS.csv")
-    routes = rinfo.loc[(rinfo['kwone'] != key1) & (rinfo['kwtwo'] != key1) & (rinfo['kwthree'] != key1) & (rinfo['kwone'] != key2) & (rinfo['kwtwo'] != key2) & (rinfo['kwthree'] != key2) & (rinfo['kwone'] != key3) & (rinfo['kwtwo'] != key3) & (rinfo['kwthree'] != key3)]
+    routes = pd.read_csv("~/Documents/jtnp_routesAndDesc_joined_reducedv2.csv")
     coords = routes.as_matrix(columns=['latitude', 'longitude'])
     kms_per_radian = 6371.0088
     epsilon = .1 / kms_per_radian
@@ -55,48 +79,6 @@ def boulderjoshua_output():
     num_clusters = len(set(cluster_labels))
     clusters = pd.Series([coords[cluster_labels == n] for n in range(num_clusters)])
     #print('Number of clusters: {}'.format(num_clusters))
-
-    # This takes the coordinates of routes from a given cluster, returns a reduced list of unique coordinates
-    # (no overlap/duplicates), and creates a new pandas data frame with just the routes in this cluster.
-
-    def delete_duplicate_pairs(*arrays):
-        unique = set()
-        arrays = list(arrays)
-        n = range(len(arrays))
-        index = 0
-        for pair in zip(*arrays):
-            if pair not in unique:
-                unique.add(pair)
-                for i in n:
-                    arrays[i][index] = pair[i]
-                index += 1
-        return [a[:index] for a in arrays]
-
-    # Based on centroids, this will take out clusters with less than 2 of each input category
-
-    minimums = list()
-
-    for i in range(len(clusters)-1):
-        clust0 = clusters[i]
-        ai1=clust0[:,0]
-        ai2=clust0[:,1]
-        ai1, ai2 = delete_duplicate_pairs(ai1, ai2)
-        clustsub = pd.DataFrame()
-        for j in range(len(ai1)):
-            xaoi = ai1[j]
-            xa1i = ai2[j]
-            rsub10 = routes.loc[(routes['latitude'] == xaoi) & (routes['longitude'] == xa1i)]
-            clustsub = clustsub.append(rsub10)
-        dfc = pd.DataFrame(clustsub['diffcategory'].value_counts())
-        dfc.columns=['catcount']
-        #print(dfc)
-        if len(dfc) < 3:
-            minimums.append(0)
-        elif dfc['catcount'][diffrate1] >= 2 and dfc['catcount'][diffrate2] >= 2 and dfc['catcount'][diffrate3] >= 2:
-            minimums.append(1)
-        else:
-            minimums.append(0)
-    minimums.append(0)
 
     def get_centermost_point(cluster):
         centroid = (MultiPoint(cluster).centroid.x, MultiPoint(cluster).centroid.y)
@@ -116,24 +98,12 @@ def boulderjoshua_output():
     rs = rep_points.apply(lambda row: routes[(routes['latitude']==row['lat']) & (routes['longitude']==row['lon'])].iloc[0], axis=1)
     rs_centroids = rs[['latitude','longitude']]
 
-    minimums2 = pd.DataFrame(minimums)
-    minimums2.columns = ['bin']
-    rs_centroids2 = rs_centroids.join(minimums2)
-    rs_centroids3 = rs_centroids2[rs_centroids2['bin'] > 0]
-    del rs_centroids3['bin']
-    rs_centroids3.index = range(len(rs_centroids3.index))
-
     #pull 'birth_month' from input field and store it
     dinput = request.args.get('input')
-    dinput2 = dinput[:3]
-    dinput3 = dinput[5:]
-    dinputdate = "01"
-    dinput4 = dinput2 + dinputdate + dinput3
-    print(dinput4)
     forecastabbrev10 = pd.read_csv("~/Documents/campgroundpredictions_twoyears_SARIMA.csv")
     campsites = pd.read_csv("~/Documents/jtnp_campsite_coords.csv")
     campsites.columns=['variable','latitude','longitude']
-    az = forecastabbrev10.loc[forecastabbrev10['date'] == dinput4]
+    az = forecastabbrev10.loc[forecastabbrev10['date'] == dinput]
     az2=az[['Belle','BlackRock','Cottonwood','HiddenValley','IndianCove','JumboRocks','Ryan','WhiteTank']]
     az3=pd.DataFrame(az2)
     az3.columns=['Belle','Black Rock','Cottonwood','Hidden Valley','Indian Cove','Jumbo Rocks','Ryan','White Tank']
@@ -142,9 +112,7 @@ def boulderjoshua_output():
     az3=az3.sort_values('value')
     az3=az3.reset_index()
     bestcamp = (az3['variable'][0])
-    bcocc = (az3['value'][0])
-    bcoccp = bcocc * 100
-    bcoccper = ("%.2f" % bcoccp)
+    bcocc = ("%.3f" % az3['value'][0])
     bestcamp2 = (az3['variable'][1])
     bcocc2 = ("%.3f" % az3['value'][1])
     bestcamp3 = (az3['variable'][2])
@@ -156,12 +124,27 @@ def boulderjoshua_output():
     print(bestcamp3)
     print(bcocc3)
 
+    # This takes the coordinates of routes from a given cluster, returns a reduced list of unique coordinates
+    # (no overlap/duplicates), and creates a new pandas data frame with just the routes in this cluster.
+
+    def delete_duplicate_pairs(*arrays):
+        unique = set()
+        arrays = list(arrays)
+        n = range(len(arrays))
+        index = 0
+        for pair in zip(*arrays):
+            if pair not in unique:
+                unique.add(pair)
+                for i in n:
+                    arrays[i][index] = pair[i]
+                    index += 1
+        return [a[:index] for a in arrays]
 
     # Finding the Day 1 Climbing Clusters
     y10=az3['latitude'][0]
     x10=az3['longitude'][0]
     array = np.array([y10, x10])
-    rs_c = rs_centroids3.as_matrix()
+    rs_c = rs_centroids.as_matrix()
     points_ref = rs_c
     tree = cKDTree(points_ref)
     _, idx1 = tree.query(array, k=1)
@@ -175,7 +158,7 @@ def boulderjoshua_output():
     climb1 = pr4[0,:]
     cl1lat = climb1[0]
     cl1long = climb1[1]
-    centroid_row = rs_centroids3.loc[rs_centroids3['latitude'] == climb1[0]]
+    centroid_row = rs_centroids.loc[rs_centroids['latitude'] == climb1[0]]
     cri = centroid_row.index[0]
     c1routes = clusters[cri] # c1routes = list of coordinates for closest cluster
 
@@ -183,7 +166,7 @@ def boulderjoshua_output():
     climb2 = pr4[1,:]
     cl2lat = climb2[0]
     cl2long = climb2[1]
-    centroid_row2 = rs_centroids3.loc[rs_centroids3['latitude'] == climb2[0]]
+    centroid_row2 = rs_centroids.loc[rs_centroids['latitude'] == climb2[0]]
     cri2 = centroid_row2.index[0]
     c2routes = clusters[cri2] # c2routes = list of coordinates for 2nd closest cluster
 
@@ -204,7 +187,7 @@ def boulderjoshua_output():
     climb3 = pr5[0,:]
     cl3lat = climb3[0]
     cl3long = climb3[1]
-    centroid_row3 = rs_centroids3.loc[rs_centroids3['latitude'] == climb3[0]]
+    centroid_row3 = rs_centroids.loc[rs_centroids['latitude'] == climb3[0]]
     cri3 = centroid_row3.index[0]
     c3routes = clusters[cri3]
 
@@ -212,7 +195,7 @@ def boulderjoshua_output():
     climb4 = pr5[1,:]
     cl4lat = climb4[0]
     cl4long = climb4[1]
-    centroid_row4 = rs_centroids3.loc[rs_centroids3['latitude'] == climb4[0]]
+    centroid_row4 = rs_centroids.loc[rs_centroids['latitude'] == climb4[0]]
     cri4 = centroid_row4.index[0]
     c4routes = clusters[cri4]
 
@@ -229,7 +212,7 @@ def boulderjoshua_output():
         xa1 = a2[i]
         rsub1 = routes.loc[(routes['latitude'] == xao) & (routes['longitude'] == xa1)]
         rsubA = rsubA.append(rsub1)
-    numroutes1 = len(rsubA)
+    numroutes1 = len(rsubA)//2
     rsubAurl = (rsubA['url'])
     rsubnames = list(rsubA['name'])[0:numroutes1]
 
@@ -245,7 +228,7 @@ def boulderjoshua_output():
         xb1 = b2[i]
         rsub2 = routes.loc[(routes['latitude'] == xbo) & (routes['longitude'] == xb1)]
         rsubB = rsubB.append(rsub2)
-    numroutes2 = len(rsubB)
+    numroutes2 = len(rsubB)//2
     rsubBurl = (rsubB['url'])
     rsubnames2 = list(rsubB['name'])[0:numroutes2]
 
@@ -261,7 +244,7 @@ def boulderjoshua_output():
         xc1 = c2[i]
         rsub3 = routes.loc[(routes['latitude'] == xco) & (routes['longitude'] == xc1)]
         rsubC = rsubC.append(rsub3)
-    numroutes3 = len(rsubC)
+    numroutes3 = len(rsubC)//2
     rsubCurl = (rsubC['url'])
     rsubnames3 = list(rsubC['name'])[0:numroutes3]
 
@@ -277,7 +260,7 @@ def boulderjoshua_output():
         xd1 = d2[i]
         rsub4 = routes.loc[(routes['latitude'] == xdo) & (routes['longitude'] == xd1)]
         rsubD = rsubD.append(rsub4)
-    numroutes4 = len(rsubD)
+    numroutes4 = len(rsubD)//2
     rsubDurl = (rsubD['url'])
     rsubnames4 = list(rsubD['name'])[0:numroutes4]
 
@@ -291,4 +274,4 @@ def boulderjoshua_output():
     #for i in range(0,query_results.shape[0]):
     #    births.append(dict(index=query_results.iloc[i]['index'], attendant=query_results.iloc[i]['attendant'], birth_month=query_results.iloc[i]['birth_month']))
     #    the_result = ModelIt(patient,births)
-    return render_template("output.html", bestcamp = bestcamp, bcoccper = bcoccper,  bestcamp2 = bestcamp2, bcocc2 = bcocc2,  bestcamp3 = bestcamp3, bcocc3 = bcocc3, cl1lat = cl1lat, cl1long = cl1long, cl2lat = cl2lat, cl2long = cl2long, cl3lat = cl3lat, cl3long = cl3long, cl4lat = cl4lat, cl4long = cl4long, rsubnames = rsubnames, rsubnames2 = rsubnames2, rsubnames3 = rsubnames3, rsubnames4 = rsubnames4, numroutes1 = numroutes1, numroutes2 = numroutes2, numroutes3 = numroutes3, numroutes4 = numroutes4, rsubAurl = rsubAurl, rsubBurl = rsubBurl, rsubCurl = rsubCurl, rsubDurl = rsubDurl, diffrate1 = diffrate1, x10 = x10, y10 = y10)
+    return render_template("output.html", bestcamp = bestcamp, bcocc = bcocc,  bestcamp2 = bestcamp2, bcocc2 = bcocc2,  bestcamp3 = bestcamp3, bcocc3 = bcocc3, cl1lat = cl1lat, cl1long = cl1long, cl2lat = cl2lat, cl2long = cl2long, cl3lat = cl3lat, cl3long = cl3long, cl4lat = cl4lat, cl4long = cl4long, rsubnames = rsubnames, rsubnames2 = rsubnames2, rsubnames3 = rsubnames3, rsubnames4 = rsubnames4, numroutes1 = numroutes1, numroutes2 = numroutes2, numroutes3 = numroutes3, numroutes4 = numroutes4, rsubAurl = rsubAurl, rsubBurl = rsubBurl, rsubCurl = rsubCurl, rsubDurl = rsubDurl, diffrate1 = diffrate1)

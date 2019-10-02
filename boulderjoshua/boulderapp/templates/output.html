@@ -16,8 +16,8 @@
     <!-- Bootstrap core CSS -->
     <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <script src='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css' rel='stylesheet' />
 
     <style>
       .bd-placeholder-img {
@@ -34,6 +34,11 @@
           font-size: 3.5rem;
         }
       }
+
+      .mapboxgl-popup {
+      max-width: 200px;
+      }
+
     </style>
 
     <!-- Custom styles for this template -->
@@ -49,23 +54,78 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
+
   <body class="text-center">
     <div class="cover-container d-flex w-100 h-100 p-3 mb-2 bg-secondary text-white mx-auto flex-column">
-  <header class="masthead mb-auto">
-    <div class="inner">
-      <h1 class="masthead-brand">BoulderJoshua</h1>
-      <nav class="nav nav-masthead justify-content-center">
-        <a class="nav-link active text-white bg-dark" href="#">Home</a>
-        <a class="nav-link text-white bg-dark" href="#">Features</a>
-        <a class="nav-link text-white bg-dark" href="#">Contact</a>
-      </nav>
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h1 class="masthead-brand">BoulderJoshua</h1>
+        </div>
     </div>
   </header>
 
-
   <body>
+     <div class="cover-container d-flex w-100 h-100 p-3 mb-2 bg-secondary text-black mx-auto flex-column">
+     <div id='map' style='width: 1300px; height: 700px;'></div>
+     <script>
+     mapboxgl.accessToken = 'pk.eyJ1IjoibnJncmlmZmluIiwiYSI6ImNrMTBzbjlpMTAwNnkzY2w4NWhqdGd2ZWMifQ.PEByrwNr0iGYYPs1C6u5dg';
+     var map = new mapboxgl.Map({
+       container: 'map', // container id
+       style: 'mapbox://styles/mapbox/streets-v11',
+       center: [-116.1, 33.95], // starting position
+       zoom: 9.5 // starting zoom
+     });
 
-     <br><br>
+     // Point 1 on the map
+     var popupt = new mapboxgl.Popup({ offset: 25 })
+     .setText('Day 1, Location 1');
+
+     var popup = new mapboxgl.Marker()
+     .setLngLat([{{cl2long}}, {{cl2lat}}])
+     .setPopup(popupt)
+     .addTo(map);
+
+     // Point 2 on the map
+     var popupt2 = new mapboxgl.Popup({ offset: 25 })
+     .setText('Day 1, Location 2');
+
+     var popup2 = new mapboxgl.Marker()
+     .setLngLat([{{cl1long}}, {{cl1lat}}])
+     .setPopup(popupt2)
+     .addTo(map);
+
+     // Point 3 on the map
+     var popupt3 = new mapboxgl.Popup({ offset: 25 })
+     .setText('Day 2, Location 1');
+
+     var popup3 = new mapboxgl.Marker()
+     .setLngLat([{{cl3long}}, {{cl3lat}}])
+     .setPopup(popupt3)
+     .addTo(map);
+
+     // Point 4 on the map
+     var popupt4 = new mapboxgl.Popup({ offset: 25 })
+     .setText('Day 2, Location 2');
+
+     var popup4 = new mapboxgl.Marker()
+     .setLngLat([{{cl4long}}, {{cl4lat}}])
+     .setPopup(popupt4)
+     .addTo(map);
+
+     // Campground on the map
+     var popuptcamp = new mapboxgl.Popup({ offset: 25 })
+     .setText('Best Campground: {{bestcamp}}');
+
+     var popupcamp = new mapboxgl.Marker()
+     .setLngLat([{{x10}}, {{y10}}])
+     .setPopup(popuptcamp)
+     .addTo(map);
+
+     // Add zoom and rotation controls to the map.
+     map.addControl(new mapboxgl.NavigationControl());
+     </script>
+     </div>
+
 
      <div class="container">
         <div class="starter-template">
@@ -81,17 +141,15 @@
         <div class="row">
      <div class="col-md-6">
        <h2>Location 1</h2>
-       <p>{{cl2lat}}, {{cl2long}}</p>
        <p>Number of Routes in This Location: {{numroutes2}}</p>
        <p>{{rsubnames2}}</p>
-       <p><a href="https://www.mountainproject.com/" class="btn btn-secondary" role="button">View details &raquo;</a></p>
+       <p><a href="https://www.mountainproject.com/area/106098051/joshua-tree-bouldering" class="btn btn-secondary" role="button">View details &raquo;</a></p>
      </div>
      <div class="col-md-6">
        <h2>Location 2</h2>
-       <p>{{cl1lat}}, {{cl1long}}</p>
        <p>Number of Routes in This Location: {{numroutes1}}</p>
        <p>{{rsubnames}}</p>
-       <p><a href="https://www.mountainproject.com/" class="btn btn-secondary" role="button">View details &raquo;</a></p>
+       <p><a href="https://www.mountainproject.com/area/106098051/joshua-tree-bouldering" class="btn btn-secondary" role="button">View details &raquo;</a></p>
      </div>
    </div>
 
@@ -104,17 +162,15 @@
         <div class="row">
              <div class="col-md-6">
                <h2>Location 1</h2>
-               <p>{{cl3lat}}, {{cl3long}}</p>
                <p>Number of Routes in This Location: {{numroutes3}}</p>
                <p>{{rsubnames3}}</p>
-               <p><a href="https://www.mountainproject.com/" class="btn btn-secondary" role="button">View details &raquo;</a></p>
+               <p><a href="https://www.mountainproject.com/area/106098051/joshua-tree-bouldering" class="btn btn-secondary" role="button">View details &raquo;</a></p>
              </div>
              <div class="col-md-6">
                <h2>Location 2</h2>
-               <p>{{cl4lat}}, {{cl4long}}</p>
                <p>Number of Routes in This Location: {{numroutes4}}</p>
                <p>{{rsubnames4}}</p>
-               <p><a href="https://www.mountainproject.com/" class="btn btn-secondary" role="button">View details &raquo;</a></p>
+               <p><a href="https://www.mountainproject.com/area/106098051/joshua-tree-bouldering" class="btn btn-secondary" role="button">View details &raquo;</a></p>
              </div>
            </div>
 
@@ -128,7 +184,7 @@
             <div class="starter-template">
 	      <h3>Best Campground:</h3>
 	      <h3>{{bestcamp}}</h3>
-	      <p>Predicted Occupancy Rate, Month Selected: {{bcocc}}</p>
+	      <p>Predicted Occupancy Rate, Month Selected: {{bcoccper}} %</p>
 	    </div>
 
       <hr class="mb-4">
@@ -139,12 +195,10 @@
         <div class="starter-template">
           <p>In case the first camp is full, these two camps are the next most likely to have availability.</p>
           <h5>{{bestcamp2}}</h5>
-	        <p>Predicted Occupancy Rate, Month Selected: {{bcocc2}}</p>
         </div>
 
 	  <div class="starter-template">
 	    <h5>{{bestcamp3}}</h5>
-	    <p>Predicted Occupancy Rate, Month Selected: {{bcocc3}}</p>
 	  </div>
 
     <hr class="mb-4">
@@ -154,23 +208,6 @@
         <p>*Occupancy Rates are MONTHLY Estimates* - Campsite Availability Not Guaranteed</p>
       </div>
     </div>
-
-    <div id='map' style='width: 1000px; height: 800px;'></div>
-    <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoibnJncmlmZmluIiwiYSI6ImNrMTBzbjlpMTAwNnkzY2w4NWhqdGd2ZWMifQ.PEByrwNr0iGYYPs1C6u5dg';
-    var map = new mapboxgl.Map({
-    container: 'map', // container id
-    style: 'mapbox://styles/mapbox/streets-v11',
-    center: [-116.1, 33.95], // starting position
-    zoom: 10 // starting zoom
-    });
-
-    // Add zoom and rotation controls to the map.
-    map.addControl(new mapboxgl.NavigationControl());
-
-
-    </script>
-
 
 
     <!-- Bootstrap core JavaScript

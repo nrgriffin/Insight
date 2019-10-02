@@ -52,11 +52,6 @@
   <header class="masthead mb-auto">
     <div class="inner">
       <h1 class="masthead-brand">BoulderJoshua</h1>
-      <nav class="nav nav-masthead justify-content-center">
-        <a class="nav-link active text-white bg-dark" href="#">Home</a>
-        <a class="nav-link text-white bg-dark" href="#">Features</a>
-        <a class="nav-link text-white bg-dark" href="#">Contact</a>
-      </nav>
     </div>
   </header>
 
@@ -70,6 +65,7 @@
         <h5>Get Started Planning Your Two-Day Trip</h5>
         <hr class="mb-4">
 	       <h5>Enter Travel Date</h5>
+         <p>MM/DD/YYYY</p>
       </div>
 
       <div class = "container">
@@ -102,7 +98,7 @@
           <option value="hard">Difficult: V4 +</option>
         </select>
         <div class="invalid-feedback">
-          Please select a valid country.
+          Please select a valid option.
         </div>
       </div>
       <div class="col-md-4 mb-3">
@@ -114,7 +110,7 @@
           <option value="hard">Difficult: V4 +</option>
         </select>
         <div class="invalid-feedback">
-          Please provide a valid state.
+          Please provide a valid option.
         </div>
       </div>
       <div class="col-md-4 mb-3">
@@ -126,47 +122,74 @@
           <option value="hard">Difficult: V4 +</option>
         </select>
         <div class="invalid-feedback">
-          Please provide a valid state.
+          Please provide a valid option.
+        </div>
+      </div>
+    </div>
+
+    <br><br>
+
+    <hr class="mb-4">
+
+    <div class="starter-template">
+      <h4>Optional: Any Route Features That You Don't Want To Experience?</h4>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label for="keyword1">First Feature</label>
+        <select class="custom-select d-block w-100" id="keyword1" name="keyword1">
+          <option value="None">Choose...</option>
+          <option value="None">None</option>
+          <option value="crimp">Crimp</option>
+          <option value="dyno">Dyno</option>
+          <option value="heel">Heel [Hook]</option>
+          <option value="pinch">Pinch</option>
+          <option value="smear">Smear</option>
+          <option value="traverse">Traverse</option>
+          <option value="undercling">Undercling</option>
+        </select>
+        <div class="invalid-feedback">
+          Please select a valid option.
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="keyword2">Second Feature</label>
+        <select class="custom-select d-block w-100" id="keyword2" name="keyword2">
+          <option value="None">Choose...</option>
+          <option value="None">None</option>
+          <option value="crimp">Crimp</option>
+          <option value="dyno">Dyno</option>
+          <option value="heel">Heel [Hook]</option>
+          <option value="pinch">Pinch</option>
+          <option value="smear">Smear</option>
+          <option value="traverse">Traverse</option>
+          <option value="undercling">Undercling</option>
+        </select>
+        <div class="invalid-feedback">
+          Please provide a valid option.
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="keyword3">Third Feature</label>
+        <select class="custom-select d-block w-100" id="keyword3" name="keyword3">
+          <option value="None">Choose...</option>
+          <option value="None">None</option>
+          <option value="crimp">Crimp</option>
+          <option value="dyno">Dyno</option>
+          <option value="heel">Heel [Hook]</option>
+          <option value="pinch">Pinch</option>
+          <option value="smear">Smear</option>
+          <option value="traverse">Traverse</option>
+          <option value="undercling">Undercling</option>
+        </select>
+        <div class="invalid-feedback">
+          Please provide a valid option.
         </div>
       </div>
     </div>
 
     <hr class="mb-4">
-
-    <div class="starter-template">
-      <h4>Any Route Features That You Don't Want To Experience?</h4>
-    </div>
-
-    <div class="custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" id="feature1">
-      <label class="custom-control-label" for="feature1">Crimp</label>
-    </div>
-    <div class="custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" id="feature2">
-      <label class="custom-control-label" for="feature2">Dyno</label>
-    </div>
-    <div class="custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" id="feature3">
-      <label class="custom-control-label" for="feature3">Heel [Hook]</label>
-    </div>
-    <div class="custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" id="feature4">
-      <label class="custom-control-label" for="feature4">Pinch</label>
-    </div>
-    <div class="custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" id="feature5">
-      <label class="custom-control-label" for="feature5">Smear</label>
-    </div>
-    <div class="custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" id="feature6">
-      <label class="custom-control-label" for="feature6">Traverse</label>
-    </div>
-    <div class="custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" id="feature7">
-      <label class="custom-control-label" for="feature7">Undercling</label>
-    </div>
-    <hr class="mb-4">
-
 
 	  <div>
 	    <button type="submit" class="btn btn-default btn-lg text-white bg-dark">Search Climb Info</button>
